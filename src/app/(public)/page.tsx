@@ -1,7 +1,9 @@
+import { Header } from '@/app/(public)/components/header'
+
 export default function Home() {
   return (
-    <main>
-      <div>Hello world!</div>
-    </main>
-  );
+    <div>
+      <Header />
+    </div>
+  )
 }
