@@ -12,3 +12,132 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+ 
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@map("sessions")
+}
+
+model Appointment {
+  id String @id @default(uuid())
+  name String
+  email String
+  phone String
+  appointmentDate DateTime
+  time String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  serviceId String
+  service Service @relation(fields: [serviceId], references: [id])
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+
+}
+
+model Reminder {
+  id String @id @default(uuid())
+  description String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Service{
+  id String @id @default(uuid())
+  name String
+  price Int
+  duration Int
+  status Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  appointments Appointment[]
+
+}
+
+enum Plan {
+  BASIC
+  PROFESSIONAL
+}
+model Subscription {
+  id String @id @default(uuid())
+  status String
+  plan Plan
+  priceId String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+}
+ 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  address       String? @default("")
+  phone         String? @default("")
+  status        Boolean @default(true)
+  timezone      String?
+  stripe_customer_id String?
+
+  subscription Subscription?
+  services Service[]
+  reminders Reminder[]
+
+  accounts      Account[]
+  sessions      Session[]
+  appointments Appointment[]
+ 
+  @@map("users")
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
