@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { SessionAuthProvider } from '@/components/session-auth'
 
 export const metadata: Metadata = {
   title: 'Odonto Pro',
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="antialiased">
+        <SessionAuthProvider>{children}</SessionAuthProvider>
+      </body>
     </html>
   )
 }
