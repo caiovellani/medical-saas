@@ -120,11 +120,12 @@ model User {
   phone         String? @default("")
   status        Boolean @default(true)
   timezone      String?
+  times         String[] @default([])
   stripe_customer_id String?
 
-  subscription Subscription?
-  services Service[]
-  reminders Reminder[]
+  subscription  Subscription?
+  services      Service[]
+reminders       Reminder[]
 
   accounts      Account[]
   sessions      Session[]
