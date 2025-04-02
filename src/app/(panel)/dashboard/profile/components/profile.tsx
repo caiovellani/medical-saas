@@ -1,5 +1,8 @@
 'use client'
-import { useProfileForm } from '@/app/(panel)/dashboard/profile/components/profile-form'
+import {
+  useProfileForm,
+  type ProfileFormData,
+} from '@/app/(panel)/dashboard/profile/components/profile-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
@@ -79,10 +82,18 @@ export function ProfileContent() {
     )
   }
 
+  async function onSubmit(values: ProfileFormData) {
+    const profileData = {
+      ...values,
+      times: selectedHours,
+    }
+    console.log('values', values)
+  }
+
   return (
     <div className="mx-auto">
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <Card>
             <CardHeader>
               <CardTitle>Meu Perfil</CardTitle>
