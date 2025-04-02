@@ -58,6 +58,19 @@ export function ProfileContent() {
 
   const hours = generateTimeSlots()
 
+  const timeZones = Intl.supportedValuesOf('timeZone').filter(
+    (zone) =>
+      zone.startsWith('America/Sao_Paulo') ||
+      zone.startsWith('America/Fortaleza') ||
+      zone.startsWith('America/Recife') ||
+      zone.startsWith('America/Bahia') ||
+      zone.startsWith('America/Belem') ||
+      zone.startsWith('America/Brasilia') ||
+      zone.startsWith('America/Manaus') ||
+      zone.startsWith('America/Cuiaba') ||
+      zone.startsWith('America/Boa_Vista')
+  )
+
   function toggleHour(hour: string) {
     setSelectedHours((prev) =>
       prev.includes(hour)
@@ -229,6 +242,42 @@ export function ProfileContent() {
                       </DialogContent>
                     </Dialog>
                   </div>
+
+                  <FormField
+                    control={form.control}
+                    name="timeZone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          Selecione o fuso horário
+                        </FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o seu fuso horário" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {timeZones.map((zone) => (
+                                <SelectItem key={zone} value={zone}>
+                                  {zone}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button
+                    className="w-full bg-emerald-500 hover:bg-emerald-400"
+                    type="submit"
+                  >
+                    Salvar Alterações
+                  </Button>
                 </div>
               </CardContent>
             </CardHeader>
