@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { SessionAuthProvider } from '@/components/session-auth'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Odonto Pro',
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <SessionAuthProvider>{children}</SessionAuthProvider>
+        <SessionAuthProvider>
+          <Toaster duration={2500} />
+          {children}
+        </SessionAuthProvider>
       </body>
     </html>
   )
