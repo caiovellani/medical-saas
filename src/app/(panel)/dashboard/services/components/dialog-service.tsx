@@ -23,11 +23,20 @@ import {
 
 import { Input } from '@/components/ui/input'
 import { convertRealToCents } from '@/utils/convert-currency'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
-export function DialogService() {
+interface DialogServiceProps {
+  closeModal: () => void
+}
+
+export function DialogService({ closeModal }: DialogServiceProps) {
+  const [loading, setLoading] = useState(false)
+
   const form = useDialogServiceForm()
 
   async function onSubmit(values: DialogServiceFormData) {
+    setLoading(true)
     const priceInCents = convertRealToCents(values.price)
     const hours = parseInt(values.hours) || 0
     const minutes = parseInt(values.minutes) || 0
@@ -40,7 +49,19 @@ export function DialogService() {
       duration: duration,
     })
 
-    console.log(response)
+    setLoading(false)
+
+    if (response.err) {
+      toast.error(response.err)
+      return
+    }
+    toast.success('Serviço cadastrado com sucesso!')
+    handleCloseModal()
+  }
+
+  function handleCloseModal() {
+    form.reset()
+    closeModal()
   }
 
   function changeCurrency(event: React.ChangeEvent<HTMLInputElement>) {
@@ -138,8 +159,12 @@ export function DialogService() {
             />
           </div>
 
-          <Button className="w-full font-semibold text-white" type="submit">
-            Adicionar Serviço
+          <Button
+            className="w-full font-semibold text-white"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? 'Carregando... ' : 'Adicionar serviço'}
           </Button>
         </form>
       </Form>
