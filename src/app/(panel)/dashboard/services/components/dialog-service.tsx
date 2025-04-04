@@ -1,5 +1,6 @@
 'use client'
 
+import { createNewService } from '@/app/(panel)/dashboard/services/actions/create-service'
 import {
   useDialogServiceForm,
   type DialogServiceFormData,
@@ -28,6 +29,18 @@ export function DialogService() {
 
   async function onSubmit(values: DialogServiceFormData) {
     const priceInCents = convertRealToCents(values.price)
+    const hours = parseInt(values.hours) || 0
+    const minutes = parseInt(values.minutes) || 0
+
+    const duration = hours * 60 + minutes
+
+    const response = await createNewService({
+      name: values.name,
+      price: priceInCents,
+      duration: duration,
+    })
+
+    console.log(response)
   }
 
   function changeCurrency(event: React.ChangeEvent<HTMLInputElement>) {
