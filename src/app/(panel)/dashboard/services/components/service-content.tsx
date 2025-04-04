@@ -1,3 +1,4 @@
+import { ServicesList } from '@/app/(panel)/dashboard/services/components/services-list'
 import { getAllServices } from '@/app/(panel)/dashboard/services/data-access/get-all-services'
 
 interface ServicesContentProps {
@@ -7,5 +8,5 @@ interface ServicesContentProps {
 export async function ServicesContent({ userId }: ServicesContentProps) {
   const services = await getAllServices({ userId: userId })
 
-  return <div>Todos os meus serviços</div>
+  return <ServicesList />
 }
