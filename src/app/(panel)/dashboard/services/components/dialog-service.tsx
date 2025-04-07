@@ -1,6 +1,7 @@
 'use client'
 
 import { createNewService } from '@/app/(panel)/dashboard/services/actions/create-service'
+import { updateService } from '@/app/(panel)/dashboard/services/actions/update-service'
 import {
   useDialogServiceForm,
   type DialogServiceFormData,
@@ -94,7 +95,24 @@ export function DialogService({
     name: string
     priceInCents: number
     duration: number
-  }) {}
+  }) {
+    const response = await updateService({
+      serviceId: serviceId,
+      name: name,
+      price: priceInCents,
+      duration: duration,
+    })
+
+    setLoading(false)
+
+    if (response.err) {
+      toast.error(response.err)
+      return
+    }
+
+    toast.success(response.data)
+    handleCloseModal()
+  }
 
   function handleCloseModal() {
     form.reset()
