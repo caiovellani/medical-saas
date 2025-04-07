@@ -1,23 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Pencil, Plus, X } from 'lucide-react'
 import { DialogService } from '@/app/(panel)/dashboard/services/components/dialog-service'
@@ -32,6 +18,7 @@ interface ServiceListProps {
 
 export function ServicesList({ services }: ServiceListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingService, setEditingService] = useState<null | Service>(null)
 
   async function handleDeleteService(serviceId: string) {
     const response = await deleteService({ serviceId: serviceId })
@@ -42,6 +29,11 @@ export function ServicesList({ services }: ServiceListProps) {
     }
 
     toast.success(response.data)
+  }
+
+  function handleEditService(service: Service) {
+    setEditingService(service)
+    setIsDialogOpen(true)
   }
 
   return (
@@ -62,6 +54,21 @@ export function ServicesList({ services }: ServiceListProps) {
                 closeModal={() => {
                   setIsDialogOpen(false)
                 }}
+                serviceId={editingService ? editingService.id : undefined}
+                initialValues={
+                  editingService
+                    ? {
+                        name: editingService.name,
+                        price: (editingService.price / 100)
+                          .toFixed(2)
+                          .replace('.', ','),
+                        hours: Math.floor(
+                          editingService.duration / 60
+                        ).toString(),
+                        minutes: (editingService.duration % 60).toString(),
+                      }
+                    : undefined
+                }
               />
             </DialogContent>
           </CardHeader>
@@ -81,7 +88,11 @@ export function ServicesList({ services }: ServiceListProps) {
                   </div>
 
                   <div>
-                    <Button variant="ghost" size="icon" onClick={() => {}}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEditService(service)}
+                    >
                       <Pencil className="w-4 h-4" />
                     </Button>
                     <Button
