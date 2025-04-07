@@ -49,10 +49,17 @@ export function ServicesList({ services }: ServiceListProps) {
                 <Plus className="w-4 h-4" />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent
+              onInteractOutside={(e) => {
+                e.preventDefault()
+                setIsDialogOpen(false)
+                setEditingService(null)
+              }}
+            >
               <DialogService
                 closeModal={() => {
                   setIsDialogOpen(false)
+                  setEditingService(null)
                 }}
                 serviceId={editingService ? editingService.id : undefined}
                 initialValues={

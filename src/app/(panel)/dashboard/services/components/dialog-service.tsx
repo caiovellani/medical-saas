@@ -56,6 +56,17 @@ export function DialogService({
 
     const duration = hours * 60 + minutes
 
+    if (serviceId) {
+      await editServiceById({
+        serviceId: serviceId,
+        name: values.name,
+        priceInCents: priceInCents,
+        duration: duration,
+      })
+
+      return
+    }
+
     const response = await createNewService({
       name: values.name,
       price: priceInCents,
@@ -72,6 +83,18 @@ export function DialogService({
     handleCloseModal()
     router.refresh()
   }
+
+  async function editServiceById({
+    serviceId,
+    name,
+    priceInCents,
+    duration,
+  }: {
+    serviceId: string
+    name: string
+    priceInCents: number
+    duration: number
+  }) {}
 
   function handleCloseModal() {
     form.reset()
@@ -178,7 +201,9 @@ export function DialogService({
             type="submit"
             disabled={loading}
           >
-            {loading ? 'Carregando... ' : 'Adicionar serviço'}
+            {loading
+              ? 'Carregando'
+              : `${serviceId ? 'Atualizar serviço' : 'Cadastrar serviço'}`}
           </Button>
         </form>
       </Form>
