@@ -66,7 +66,10 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_URL}/api/schedule/get-appointments?userId=${clinic.id}&date=${dateString}`
         )
-        return []
+        const json = await response.json()
+        setLoadingSlots(false)
+
+        return json
       } catch (err) {
         console.log(err)
         setLoadingSlots(false)
@@ -79,7 +82,16 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
   useEffect(() => {
     if (selectedDate) {
       fetchBlockedTimes(selectedDate).then((blocked) => {
-        console.log(blocked, 'Horários bloqueados')
+        setBlockedTimes(blocked)
+
+        const times = clinic.times || []
+
+        const finalSlots = times.map((time) => ({
+          time: time,
+          available: !blocked.includes(time),
+        }))
+
+        setAvailableTimeSlots(finalSlots)
       })
     }
   }, [selectedDate, clinic.times, selectedTime, fetchBlockedTimes])
