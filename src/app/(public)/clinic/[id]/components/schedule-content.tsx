@@ -4,7 +4,10 @@ import Image from 'next/image'
 import imgTest from '@/../public/foto1.png'
 import { MapPin } from 'lucide-react'
 import type { Prisma } from '@prisma/client'
-import { useAppointmentForm } from '@/app/(public)/clinic/[id]/components/schedule-form'
+import {
+  useAppointmentForm,
+  type AppointmentFormData,
+} from '@/app/(public)/clinic/[id]/components/schedule-form'
 import {
   Form,
   FormControl,
@@ -23,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 
 type UserWithServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -37,6 +41,11 @@ interface ScheduleContentProps {
 
 export function ScheduleContent({ clinic }: ScheduleContentProps) {
   const form = useAppointmentForm()
+  const { watch } = form
+
+  async function handleRegister(formData: AppointmentFormData) {
+    console.log(formData)
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -66,7 +75,10 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
 
       <section className="max-w-2xl mx-auto w-full mt-5">
         <Form {...form}>
-          <form className="space-y-6 bg-white p-6 border rounded-md shadow-sm">
+          <form
+            className="space-y-6 bg-white p-6 border rounded-md shadow-sm"
+            onSubmit={() => handleRegister}
+          >
             <FormField
               control={form.control}
               name="name"
@@ -178,6 +190,25 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
                 </FormItem>
               )}
             />
+
+            {clinic.status ? (
+              <Button
+                className="w-full bg-emerald-500 hover:bg-emerald-400"
+                type="submit"
+                disabled={
+                  !watch('name') ||
+                  !watch('email') ||
+                  !watch('phone') ||
+                  !watch('date')
+                }
+              >
+                Realizar agendamento
+              </Button>
+            ) : (
+              <p className="bg-red-500 text-white text-center px-4 py-2 font-bold rounded-md">
+                A clínica está fechada nesse momento.
+              </p>
+            )}
           </form>
         </Form>
       </section>
