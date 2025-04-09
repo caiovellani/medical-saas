@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/form'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { formatPhone } from '@/utils/format-phone'
+import { DateTimePicker } from '@/app/(public)/clinic/[id]/components/date-picker'
 
 type UserWithServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -48,7 +50,7 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
             <h1 className="text-2xl font-bold mb-2">{clinic.name}</h1>
             <div className="flex items-center gap-1">
               <MapPin className="w-4 h-4" />
-              <span>
+              <span className="font-semibold">
                 {clinic.address ? clinic.address : 'Endereço não informado'}
               </span>
             </div>
@@ -56,27 +58,95 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
         </div>
       </section>
 
-      <Form {...form}>
-        <form className="space-y-6 bg-white p-6 border rounded-md shadow-sm">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="my-2">
-                <FormLabel className="font-semibold">Nome completo:</FormLabel>
-                <FormControl>
-                  <Input
-                    id="name"
-                    placeholder="Digite seu nome completo"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
+      <section className="max-w-2xl mx-auto w-full mt-5">
+        <Form {...form}>
+          <form className="space-y-6 bg-white p-6 border rounded-md shadow-sm">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="my-2">
+                  <FormLabel className="font-semibold">
+                    Nome completo:
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="name"
+                      placeholder="Digite seu nome completo"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="my-2">
+                  <FormLabel className="font-semibold">Email:</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="email"
+                      placeholder="Digite seu email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem className="my-2">
+                  <FormLabel className="font-semibold">Telefone:</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      id="phone"
+                      placeholder="(99) 99999-9999"
+                      onChange={(e) => {
+                        const formattedValue = formatPhone(e.target.value)
+                        field.onChange(formattedValue)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="flex items-center gap-2 space-y-2">
+                  <FormLabel className="font-semibold">
+                    Data do agendamento:
+                  </FormLabel>
+                  <FormControl>
+                    <DateTimePicker
+                      initialDate={new Date()}
+                      className="w-full rounded border p-2"
+                      onChange={(date) => {
+                        if (date) {
+                          field.onChange(date)
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+      </section>
     </div>
   )
 }
