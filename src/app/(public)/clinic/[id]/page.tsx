@@ -1,3 +1,4 @@
+import { ScheduleContent } from '@/app/(public)/clinic/[id]/components/schedule-content'
 import { getInfoSchedule } from '@/app/(public)/clinic/[id]/data-access/get-info-schedule'
 import { redirect } from 'next/navigation'
 
@@ -15,5 +16,5 @@ export default async function SchedulePage({
 
   console.log(user)
 
-  return <h1>Teste: {userId}</h1>
+  return <ScheduleContent />
 }
