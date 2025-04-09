@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { useState } from 'react'
 
 type UserWithServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -39,9 +40,19 @@ interface ScheduleContentProps {
   clinic: UserWithServiceAndSubscription
 }
 
+interface TimeSlot {
+  time: string
+  available: boolean
+}
+
 export function ScheduleContent({ clinic }: ScheduleContentProps) {
   const form = useAppointmentForm()
   const { watch } = form
+
+  const [selectedTime, setSelectedTime] = useState('')
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([])
+  const [loadingSlots, setLoadingSlots] = useState(false)
+  const [blockedTimes, setBlockedTimes] = useState<string[]>([])
 
   async function handleRegister(formData: AppointmentFormData) {
     console.log(formData)
